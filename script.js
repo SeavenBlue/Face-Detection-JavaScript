@@ -3,6 +3,8 @@ var detectImg = [];
 
 Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+  faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+  faceapi.nets.faceLandmark68Net.loadFromUri('/models')
 ]).then(startVideo)
 
 function startVideo() {
@@ -35,22 +37,53 @@ video.addEventListener('play', () => {
 
 })
 
+var ImageMem = [];
+var imgX;
+var imgY;
+var recogImg;
+
 function setup(){
-createCanvas(500,500)
+createCanvas(1000,500)
 FrameVid = createCapture(VIDEO)
 FrameVid.hide()
 
 }
 
-function draw(){
+var nice = 1
+async function draw(){
 
 
 background(0)
 
   if(detectImg[0]){
-image(FrameVid.get(detectImg[0]._box._x,detectImg[0]._box._y,detectImg[0]._box._width,detectImg[0]._box._height),0,0,detectImg[0]._box._width,detectImg[0]._box._height)
+for(let i = 0; i < detectImg.length; i++){
+ImageMem.push(FrameVid.get(detectImg[i]._box._x,detectImg[i]._box._y,detectImg[i]._box._width,detectImg[i]._box._height))
+
+
+}}
+
+image = await faceapi.bufferToImage(ImageMem[ImageMem.length-1])
+
+
+
+
+for(let j = 0; j < 200; j++){
+imgX = j;
+imgY = 0;
+while(imgX >= 20){ imgX = imgX-20; imgY++}
+  if(ImageMem[j]){
+image(ImageMem[j],imgX*50,imgY*50,50,50)
 }
+if(ImageMem[200]){ImageMem.splice(ImageMem-length-1,1)}
+
 }
+
+
+
+}
+
+
+
 
 
 function keyPressed(){
