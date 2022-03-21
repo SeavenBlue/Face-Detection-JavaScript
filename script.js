@@ -48,7 +48,7 @@ function draw(){
 background(0)
 
   if(detectImg[0]){
-image(FrameVid.get(detectImg[0]._box._x,detectImg[0]._box._y,detectImg[0]._box._width,detectImg[0]._box._height),0,0,200,200)
+image(FrameVid.get(detectImg[0]._box._x,detectImg[0]._box._y,detectImg[0]._box._width,detectImg[0]._box._height),0,0,detectImg[0]._box._width,detectImg[0]._box._height)
 }
 }
 
