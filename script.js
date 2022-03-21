@@ -50,7 +50,7 @@ FrameVid.hide()
 }
 
 var nice = 1
-async function draw(){
+function draw(){
 
 
 background(0)
@@ -62,7 +62,6 @@ ImageMem.push(FrameVid.get(detectImg[i]._box._x,detectImg[i]._box._y,detectImg[i
 
 }}
 
-image = await faceapi.bufferToImage(ImageMem[ImageMem.length-1])
 
 
 
@@ -79,17 +78,32 @@ if(ImageMem[200]){ImageMem.splice(ImageMem-length-1,1)}
 }
 
 
-
+loadLabeledImages()
 }
 
 
 
 
-
+/*
 function keyPressed(){
 if( key === "p"){
 save(FrameVid.get(detectImg[0]._box._x,detectImg[0]._box._y,detectImg[0]._box._width,detectImg[0]._box._height),"Gustav","png")
 console.log("image saved")
 }
+} */
 
+function loadLabeledImages() {
+  const labels = ['Gustav', 'Thomas']
+  return Promise.all(
+    labels.map(async label => {
+      const descriptions = []
+      for (let i = 1; i <= 7; i++) {
+        const img = await faceapi.fetchImage(`https://github.com/SeavenBlue/Face-Detection-JavaScript/tree/master/Elever/${label}/${i}.jpg`)
+        const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
+        descriptions.push(detections.descriptor)
+      }
+
+      return new faceapi.LabeledFaceDescriptors(label, descriptions)
+    })
+  )
 }
